@@ -1,0 +1,22 @@
+{
+  "name": "crocipedia",
+  "version": "1.0.0",
+  "description": "An application allows users to create, collaborate, and share wikis - built using Node.js and Express.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "export NODE_ENV=test && jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kwenamokgohlwa/crocipedia-node.git"
+  },
+  "keywords": [
+    "wiki"
+  ],
+  "author": "Kwena Mokgohlwa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kwenamokgohlwa/crocipedia-node/issues"
+  },
+  "homepage": "https://github.com/kwenamokgohlwa/crocipedia-node#readme"
+}
