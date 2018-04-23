@@ -13,7 +13,28 @@
 
         <% include ../static/partials/messages.ejs %>
 
-        <% include ../user/signup.ejs %>
+        <!-- Jumbotron Header -->
+        <header class="jumbotron my-4">
+          <h2 class="display-3">Crocipedia: Social, Markdown Wikis</h2>
+          <p class="lead">Create and share Markdown Wikis</p>
+          <a href="/users/signup" class="btn btn-primary btn-lg">Sign Up</a>
+        </header>
+
+        <!-- Page Features -->
+        <section class="row text-center">
+
+          <section class="col-lg-4">
+            <h4 class="card-title">Free Plan</h4>
+            <p class="card-text">Create as many public wikis as you want!</p>
+          </section>
+
+          <section class="col-lg-4">
+            <h4 class="card-title">Premium Plan</h4>
+            <p class="card-text">Create private wikis!</p>
+          </section>
+
+        </section>
+        <!-- /.row -->
 
       </main>
       <!-- /.container -->

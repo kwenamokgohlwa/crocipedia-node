@@ -1,5 +1,5 @@
 module.exports = {
   index(req, res, next){
-    res.send("Welcome to Crocipedia");
+    res.render("static/index");
   }
 }

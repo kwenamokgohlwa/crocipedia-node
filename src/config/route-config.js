@@ -5,8 +5,8 @@ module.exports = {
     const staticRoutes = require("../routes/static.js");
     const userRoutes = require("../routes/users.js");
 
-    app.use(logger("dev"));
     app.use(staticRoutes);
     app.use(userRoutes);
+    app.use(logger("dev"));
   }
 };
