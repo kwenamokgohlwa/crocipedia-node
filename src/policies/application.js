@@ -9,10 +9,17 @@ module.exports = class ApplicationPolicy {
     return this.record && (this.record.userId == this.user.id);
   }
 
-  // _isAdmin() {
-  //   return this.user && this.user.role == "admin";
-  // }
+  _isStandard() {
+    return this.user && this.user.role == 0;
+  }
 
+  _isPremium() {
+    return this.user && this.user.role == 1;
+  }
+
+  _isAdmin() {
+    return this.user && this.user.role == 2;
+  }
 
   new() {
     return this.user != null;

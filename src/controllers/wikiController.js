@@ -3,7 +3,6 @@ const Authorizer = require("../policies/wiki.js");
 
 module.exports = {
 index(req, res, next){
-  console.log("index controller");
   wikiQueries.getAllWikis((err, wikis) => {
     if(err){
       res.redirect(500, "static/index");
