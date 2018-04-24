@@ -16,6 +16,26 @@
           <li class="nav-item">
             <a class="nav-link" href="/users/signout">Sign Out</a>
           </li>
+          <% if(currentUser.role == 0) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Upgrade Account</a>
+              <form action="/users/upgrade" method="POST">
+                <script
+                  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                  data-key="pk_test_qjOQZLJCpKZkoA2bDgIX0DP3"
+                  data-amount="1500"
+                  data-name="Crocipedia"
+                  data-description="Premium Account"
+                  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                  data-locale="auto">
+                </script>
+              </form>
+            </li>
+          <% } else if (currentUser.role == 1){ %>
+            <form style="display:initial" action="/users/downgrade" method="post">
+              <button type="submit" class="btn btn-danger">Downgrade Account</button>
+            </form>
+          <% }%>
         <% } else { %>
           <li class="nav-item">
             <a class="nav-link" href="/users/signup">Sign Up</a>

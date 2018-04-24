@@ -1,6 +1,7 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
 const sgMail = require('@sendgrid/mail');
+const stripe = require("stripe")("sk_test_YkMA09JYhBueEZJsObqSjAYu");
 
 module.exports = {
   signup(req, res, next){
@@ -59,6 +60,53 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
+  },
+
+  upgrade(req, res, next){
+
+    const token = req.body.stripeToken; // Using Express
+
+    const charge = stripe.charges.create({
+      amount: 1500,
+      currency: 'usd',
+      description: 'Premium Account',
+      source: token,
+    });
+
+    let updatedUser = {
+      username: req.user.username,
+      email: req.user.email,
+      password: req.user.password,
+      role: 1
+    };
+
+    userQueries.updateUser(req, updatedUser, (err, user) => {
+      if(err || user == null){
+        res.redirect(401, "/");
+      } else {
+        req.flash("notice", "You've successfully upgraded your account!");
+        res.redirect("/");
+      }
+    });
+
+  },
+
+  downgrade(req, res, next){
+    let updatedUser = {
+      username: req.user.username,
+      email: req.user.email,
+      password: req.user.password,
+      role: 0
+    };
+
+    userQueries.updateUser(req, updatedUser, (err, user) => {
+      if(err || user == null){
+        res.redirect(401, "/");
+      } else {
+        req.flash("notice", "You've successfully downgraded your account!");
+        res.redirect("/");
+      }
+    });
   }
 
 }

@@ -17,6 +17,30 @@ module.exports = {
     .catch((err) => {
       callback(err);
     })
+  },
+
+  updateUser(req, updatedUser, callback){
+    return User.findById(req.user.id)
+    .then((user) => {
+      if(!user){
+        return callback("User not found");
+      }
+
+      if(user) {
+        user.update(updatedUser, {
+          fields: Object.keys(updatedUser)
+        })
+        .then(() => {
+          callback(null, user);
+        })
+        .catch((err) => {
+          callback(err);
+        });
+      } else {
+        req.flash("notice", "You are not signed in.");
+        callback("Forbidden");
+      }
+    });
   }
 
 }
