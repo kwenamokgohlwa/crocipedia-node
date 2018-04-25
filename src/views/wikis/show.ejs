@@ -14,7 +14,7 @@
       <h1><%= wiki.title %></h1>
 
         <% if(currentUser) { %>
-          <form style="display:initial" action="/wikis/<%= wiki.id %>/edit" method="post">
+          <form style="display:initial" action="/wikis/<%= wiki.id %>/edit" method="get">
             <button type="submit" class="btn btn-warning">Edit</button>
           </form>
           <% if(currentUser.id == wiki.userId || currentUser.role == 2) { %>
@@ -34,7 +34,7 @@
           <% } %>
       <% } %>
 
-      <p><%= wiki.body %></p>
+      <p><%- wiki.body %></p>
       <hr>
 
     </main>
