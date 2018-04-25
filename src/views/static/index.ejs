@@ -18,7 +18,13 @@
           <h3 class="display-3">Crocipedia</h3>
           <p class="lead">Social, Markdown Wikis</p>
           <p class="lead">Create and share Markdown Wikis</p>
-          <a href="/users/signup" class="btn btn-primary btn-lg">Sign Up</a>
+          <% if(currentUser) { %>
+            <a href="/wikis" class="btn btn-primary btn-lg">Wikis</a>
+          <% } else { %>
+            <a href="/users/signup" class="btn btn-primary btn-lg">Sign Up</a>
+            <a href="/users/signin" class="btn btn-primary btn-lg">Sign In</a>
+          <% } %>
+
         </header>
 
         <!-- Page Features -->

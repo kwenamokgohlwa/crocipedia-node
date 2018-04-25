@@ -27,6 +27,28 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "wikis"
     });
+
+    User.afterUpdate((user) => {
+      if(user.role == 0){
+        models.Wiki.findAll({
+          where: {
+              private: true
+            }
+        })
+        .then((wikis) => {
+          wikis.forEach((wiki) => {
+            let updatedWiki = {
+              private: false
+            }
+
+            wiki.update(updatedWiki, {
+              fields: Object.keys(updatedWiki)
+            })
+          });
+        });
+      }
+    });
+
   };
 
   User.prototype.isPremium = function() {
@@ -36,6 +58,8 @@ module.exports = (sequelize, DataTypes) => {
   User.prototype.isAdmin = function() {
     return this.role === 2;
   };
+
+
 
   return User;
 };

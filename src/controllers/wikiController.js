@@ -30,7 +30,7 @@ new(req, res, next){
       let newWiki = {
         title: req.body.title,
         body: req.body.body,
-        private: false,
+        private: req.body.private,
         userId: req.user.id
       };
 
@@ -86,6 +86,40 @@ new(req, res, next){
 
   update(req, res, next){
     wikiQueries.updateWiki(req, req.body, (err, wiki) => {
+      if(err || wiki == null){
+        res.redirect(401, `/wikis/${req.params.id}/edit`);
+      } else {
+        res.redirect(`/wikis/${req.params.id}`);
+      }
+    });
+  },
+
+  makePublic(req, res, next){
+    let updatedWiki = {
+      title: req.body.title,
+      body: req.body.body,
+      private: false,
+      userId: req.user.id
+    }
+
+    wikiQueries.updateWiki(req, updatedWiki, (err, wiki) => {
+      if(err || wiki == null){
+        res.redirect(401, `/wikis/${req.params.id}/edit`);
+      } else {
+        res.redirect(`/wikis/${req.params.id}`);
+      }
+    });
+  },
+
+  makePrivate(req, res, next){
+    let updatedWiki = {
+      title: req.body.title,
+      body: req.body.body,
+      private: true,
+      userId: req.user.id
+    }
+
+    wikiQueries.updateWiki(req, updatedWiki, (err, wiki) => {
       if(err || wiki == null){
         res.redirect(401, `/wikis/${req.params.id}/edit`);
       } else {

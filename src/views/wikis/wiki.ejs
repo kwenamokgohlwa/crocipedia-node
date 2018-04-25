@@ -14,16 +14,25 @@
       <h1>Wikis</h1>
 
       <% if(currentUser) { %>
-        <a href="/wikis/new" class="btn btn-success">New Wiki</a>
+        <a href="/wikis/new" class="btn btn-success">Create Wiki</a>
         <hr>
       <% } %>
 
       <ul class="list-group">
 
         <% wikis.forEach((wiki) => { %>
-          <li class="list-group-item">
-            <a href="/wikis/<%= wiki.id %>"> <%= wiki.title %> </a>
-          </li>
+          <% if (currentUser) { %>
+            <% if (wiki.private == true && ((currentUser.role == 1 && currentUser.id == wiki.userId) || currentUser.role == 2) ) { %>
+              <li class="list-group-item">
+                <a href="/wikis/<%= wiki.id %>"> <%= wiki.title %> </a>
+              </li>
+            <% } %>
+          <% } %>
+          <% if (wiki.private == false) { %>
+            <li class="list-group-item">
+              <a href="/wikis/<%= wiki.id %>"> <%= wiki.title %> </a>
+            </li>
+          <% } %>
         <% }) %>
 
       </ul>
