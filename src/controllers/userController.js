@@ -1,7 +1,9 @@
+const alert = require('alert-node');
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
 const sgMail = require('@sendgrid/mail');
 const stripe = require("stripe")("sk_test_YkMA09JYhBueEZJsObqSjAYu");
+
 
 module.exports = {
   signup(req, res, next){
@@ -92,6 +94,7 @@ module.exports = {
   },
 
   downgrade(req, res, next){
+    alert("Your private Wikis will be changed to Public Wikis!");
     let updatedUser = {
       username: req.user.username,
       email: req.user.email,

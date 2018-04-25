@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^6.2.1",
+    "alert-node": "^1.2.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "dotenv": "^5.0.0",
