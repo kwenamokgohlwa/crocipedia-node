@@ -37,11 +37,19 @@ new(req, res, next){
   create(req, res, next){
     const authorized = new Authorizer(req.user).create();
 
+    let privateWiki;
+
+    if(req.user.role == 0) {
+      privateWiki = false;
+    } else {
+      privateWiki = req.body.private;
+    }
+
     if(authorized) {
       let newWiki = {
         title: req.body.title,
         body: req.body.body,
-        private: req.body.private,
+        private: privateWiki,
         userId: req.user.id
       };
 
@@ -70,7 +78,7 @@ new(req, res, next){
         if(err || wiki == null){
           res.redirect(404, "/");
         } else {
-          wiki.body = markdown.toHTML(wiki.body);
+          resVars.wiki.body = markdown.toHTML(wiki.body);
           res.render("wikis/show", {resVars});
         }
       });
