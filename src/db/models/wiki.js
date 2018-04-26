@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   Wiki.associate = function(models) {
+    Wiki.hasMany(models.Collaborator, {
+      foreignKey: "wikiId",
+      as: "collaborators"
+    });
+
     Wiki.belongsTo(models.User, {
       foreignKey: "userId",
       onDelete: "CASCADE"

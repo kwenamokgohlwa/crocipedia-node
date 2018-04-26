@@ -1,15 +1,25 @@
 const wikiQueries = require("../db/queries.wikis.js");
+const User = require("../db/models").User;
+const Collaborator = require("../db/models").Collaborator;
 const Authorizer = require("../policies/wiki.js");
 const markdown = require( "markdown" ).markdown;
 
 module.exports = {
 index(req, res, next){
   wikiQueries.getAllWikis((err, wikis) => {
-    if(err){
-      res.redirect(500, "static/index");
-    }else {
-      res.render("wikis/wiki", {wikis});
-    }
+    let resVars = {};
+
+    resVars["wikis"] = wikis;
+
+    Collaborator.findAll().then((collaborators) => {
+      resVars["collaborators"] = collaborators;
+
+      if(err){
+        res.redirect(500, "static/index");
+      }else {
+        res.render("wikis/wiki", {resVars});
+      }
+    });
   })
 },
 
@@ -50,12 +60,20 @@ new(req, res, next){
 
   show(req, res, next){
     wikiQueries.getWiki(req.params.id, (err, wiki) => {
-      if(err || wiki == null){
-        res.redirect(404, "/");
-      } else {
-        wiki.body = markdown.toHTML(wiki.body);
-        res.render("wikis/show", {wiki});
-      }
+      let resVars = {};
+
+      resVars["wiki"] = wiki;
+
+      Collaborator.findAll().then((collaborators) => {
+        resVars["collaborators"] = collaborators;
+
+        if(err || wiki == null){
+          res.redirect(404, "/");
+        } else {
+          wiki.body = markdown.toHTML(wiki.body);
+          res.render("wikis/show", {resVars});
+        }
+      });
     });
   },
 
@@ -70,18 +88,33 @@ new(req, res, next){
   },
 
   edit(req, res, next){
+    let resVars = {};
+
     wikiQueries.getWiki(req.params.id, (err, wiki) => {
       if(err || wiki == null){
         res.redirect(404, "/");
       } else {
-        const authorized = new Authorizer(req.user, wiki).edit();
 
-        if(authorized){
-          res.render("wikis/edit", {wiki});
-        } else {
-          req.flash("You are not authorized to do that.")
-          res.redirect(`/wikis/${req.params.id}`)
-        }
+        resVars["wiki"] = wiki;
+
+        User.findAll()
+        .then((users) => {
+          resVars["users"] = users;
+
+          Collaborator.findAll()
+          .then((collaborators) => {
+            resVars["collaborators"] = collaborators;
+
+            const authorized = new Authorizer(req.user, wiki).edit();
+
+            if(authorized){
+              res.render("wikis/edit", {resVars});
+            } else {
+              req.flash("You are not authorized to do that.")
+              res.redirect(`/wikis/${req.params.id}`)
+            }
+          });
+        });
       }
     });
   },

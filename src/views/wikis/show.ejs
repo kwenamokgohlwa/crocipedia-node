@@ -11,30 +11,48 @@
 
       <% include ../static/partials/messages.ejs %>
 
-      <h1><%= wiki.title %></h1>
+      <h1><%= resVars.wiki.title %></h1>
 
         <% if(currentUser) { %>
-          <form style="display:initial" action="/wikis/<%= wiki.id %>/edit" method="get">
-            <button type="submit" class="btn btn-warning">Edit</button>
-          </form>
-          <% if(currentUser.id == wiki.userId || currentUser.role == 2) { %>
-            <form style="display:initial" action="/wikis/<%= wiki.id %>/destroy" method="post">
+          <% if(currentUser && resVars.wiki.private == false) { %>
+            <form style="display:initial" action="/wikis/<%= resVars.wiki.id %>/edit" method="get">
+              <button type="submit" class="btn btn-warning">Edit</button>
+            </form>
+          <% } %>
+          <% if(currentUser && resVars.wiki.private) { %>
+            <% if(resVars.collaborators) { %> 
+              <% resVars.collaborators.forEach((collaborator) => { %>
+                <% if(currentUser && (currentUser.id == collaborator.userId) && (collaborator.wikiId == resVars.wiki.id)) { %>
+                  <form style="display:initial" action="/wikis/<%= resVars.wiki.id %>/edit" method="get">
+                    <button type="submit" class="btn btn-warning">Edit</button>
+                  </form>
+                <% } %>
+              <% })%>
+            <% } %>
+            <% if(((currentUser.role == 1 && currentUser.id == resVars.wiki.userId) || currentUser.role == 2)) { %>
+              <form style="display:initial" action="/wikis/<%= resVars.wiki.id %>/edit" method="get">
+                <button type="submit" class="btn btn-warning">Edit</button>
+              </form>
+            <% } %>
+          <% } %>
+          <% if(currentUser.id == resVars.wiki.userId || currentUser.role == 2) { %>
+            <form style="display:initial" action="/wikis/<%= resVars.wiki.id %>/destroy" method="post">
               <button type="submit" class="btn btn-danger">Delete</button>
             </form>
-            <% if( wiki.private == false  && (currentUser.role == 1 || currentUser.role == 2) ) { %>
-              <form style="display:initial" action="/wikis/<%= wiki.id %>/private" method="post">
+            <% if( resVars.wiki.private == false  && (currentUser.role == 1 || currentUser.role == 2) ) { %>
+              <form style="display:initial" action="/wikis/<%= resVars.wiki.id %>/private" method="post">
                 <button type="submit" class="btn btn-success">Make Wiki Private</button>
               </form>
             <% } %>
-            <% if( wiki.private == true  && (currentUser.role == 1 || currentUser.role == 2) ) { %>
-              <form style="display:initial" action="/wikis/<%= wiki.id %>/public" method="post">
+            <% if( resVars.wiki.private == true  && (currentUser.role == 1 || currentUser.role == 2) ) { %>
+              <form style="display:initial" action="/wikis/<%= resVars.wiki.id %>/public" method="post">
                 <button type="submit" class="btn btn-primary">Make Wiki Public</button>
               </form>
             <% } %>
           <% } %>
       <% } %>
 
-      <p><%- wiki.body %></p>
+      <p><%- resVars.wiki.body %></p>
       <hr>
 
     </main>

@@ -20,12 +20,23 @@
 
       <ul class="list-group">
 
-        <% wikis.forEach((wiki) => { %>
+        <% resVars.wikis.forEach((wiki) => { %>
           <% if (currentUser) { %>
-            <% if (wiki.private == true && ((currentUser.role == 1 && currentUser.id == wiki.userId) || currentUser.role == 2) ) { %>
-              <li class="list-group-item">
-                <a href="/wikis/<%= wiki.id %>"> <%= wiki.title %> - Private </a>
-              </li>
+            <% if (wiki.private == true) { %>
+              <% if (((currentUser.role == 1 && currentUser.id == wiki.userId) || currentUser.role == 2)) {%>
+                <li class="list-group-item">
+                  <a href="/wikis/<%= wiki.id %>"> <%= wiki.title %> - Private </a>
+                </li>
+              <% } %>
+              <% if (resVars.collaborators) { %>
+                <% resVars.collaborators.forEach((collaborator) => { %>
+                  <% if ((currentUser.id == collaborator.userId) && (collaborator.wikiId == wiki.id)) {%>
+                    <li class="list-group-item">
+                      <a href="/wikis/<%= wiki.id %>"> <%= wiki.title %> - Private </a>
+                    </li>
+                  <% } %>
+                <% })%>
+            <% } %>
             <% } %>
           <% } %>
           <% if (wiki.private == false) { %>

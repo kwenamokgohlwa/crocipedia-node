@@ -1,4 +1,6 @@
 const Wiki = require("./models").Wiki;
+const User = require("./models").User;
+const Collaborator = require("./models").Collaborator;
 const Authorizer = require("../policies/wiki.js");
 
 module.exports = {
@@ -67,22 +69,53 @@ module.exports = {
         return callback("Wiki not found");
       }
 
-      const authorized = new Authorizer(req.user, wiki).update();
+      let collaboratorUser;
 
-      if(authorized) {
-        wiki.update(updatedWiki, {
-          fields: Object.keys(updatedWiki)
-        })
-        .then(() => {
-          callback(null, wiki);
-        })
-        .catch((err) => {
-          callback(err);
-        });
-      } else {
-        req.flash("notice", "You are not authorized to do that.");
-        callback("Forbidden");
-      }
+      User.findOne({where: {username: req.body.addCollaborator}})
+      .then((user) => {
+        collaboratorUser = user;
+
+        const authorized = new Authorizer(req.user, wiki).update();
+
+        if(authorized) {
+          if(wiki.private){
+            if(req.body.addCollaborator != "Select user to add"){
+              Collaborator.create({
+                username: req.body.addCollaborator,
+                wikiId: req.params.id,
+                userId: collaboratorUser.id
+              })
+              .then((collaborator) => {
+                console.log(`collaborator create: ${req.body.addCollaborator}, wikiId ${req.params.id}, userId ${req.user.id}`);
+              });
+            }
+
+            if(req.body.removeCollaborator != "Select collaborator to remove"){
+              Collaborator.destroy({
+                where: {
+                  username: req.body.removeCollaborator
+                }
+              })
+              .then((deletedCollaborator) => {
+                console.log(`${deletedCollaborator} deleted`);
+              });
+            }
+          }
+
+          wiki.update(updatedWiki, {
+            fields: Object.keys(updatedWiki)
+          })
+          .then(() => {
+            callback(null, wiki);
+          })
+          .catch((err) => {
+            callback(err);
+          });
+        } else {
+          req.flash("notice", "You are not authorized to do that.");
+          callback("Forbidden");
+        }
+      });
     });
   }
 

@@ -13,25 +13,55 @@
 
       <h1>Edit Wiki</h1>
 
-      <form action="/wikis/<%= wiki.id %>/update" method="post">
+      <form action="/wikis/<%= resVars.wiki.id %>/update" method="post">
         <div class="form-group">
           <label for="title">Wiki title</label>
-          <input value="<%= wiki.title %>" type="text" class="form-control" name="title" aria-describedby="titleHelp" placeholder="Enter Title">
+          <input value="<%= resVars.wiki.title %>" type="text" class="form-control" name="title" aria-describedby="titleHelp" placeholder="Enter Title">
            <small class="text-muted" id="titleHelp">title must be 5 or more characters in length.</small>
         </div>
 
         <div class="form-group">
           <label for="body">Body</label>
-          <textarea rows="10" class="form-control" name="body" placeholder="Enter Body"><%= wiki.body %></textarea>
+          <textarea rows="10" class="form-control" name="body" placeholder="Enter Body"><%= resVars.wiki.body %></textarea>
            <small class="text-muted" id="bodyHelp">body must be 10 or more characters in length.</small>
         </div>
 
-        <% if(currentUser && (currentUser.role == 1 || currentUser.role == 2)) { %>
+        <% if (currentUser && (currentUser.role == 1 || currentUser.role == 2)) { %>
 
           <div class="form-check">
             <input type="checkbox" class="form-check-input" id="private" name="private">
             <label class="form-check-label" for="private">Make Wiki Private</label>
           </div>
+
+        <% } %>
+
+        <% if (currentUser && resVars.wiki.private && (currentUser.role == 1 || currentUser.role == 2)) {%>
+
+          <div class="form-group">
+            <label for="addCollaborator">Add Collaborator</label>
+            <select class="form-control" id="addCollaborator" name="addCollaborator">
+              <% if (resVars.users) { %>
+                <option>Select user to add</option>
+                <% resVars.users.forEach((user) => { %>
+                  <% if (currentUser.username != user.username) { %>
+                    <option> <%= user.username %> </option>
+                  <% } %>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <% if (resVars.collaborators) { %>
+            <div class="form-group">
+              <label for="removeCollaborator">Remove Collaborator</label>
+              <select class="form-control" id="removeCollaborator" name="removeCollaborator">
+                <option>Select collaborator to remove</option>
+                <% resVars.collaborators.forEach((collaborator) => { %>
+                  <option> <%= collaborator.username %> </option>
+                <% }) %>
+              </select>
+            </div>
+          <% } %>
 
         <% } %>
 
